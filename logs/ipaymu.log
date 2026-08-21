@@ -953,3 +953,241 @@ RESPONSE:
 }
 =================================================================
 
+=================================================================
+[2026-08-21 12:15:39] ACTION: CALLBACK_WEBHOOK | REF: UNKNOWN | HTTP: 200 | STATUS: RECEIVED
+ENDPOINT: /yeye/optimus/callback-ipaymu.php
+REQUEST:
+[]
+RESPONSE:
+{
+    "processed": true,
+    "timestamp": "2026-08-21 12:15:39"
+}
+=================================================================
+
+=================================================================
+[2026-08-21 12:17:42] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87DF755EB7D | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "YEYE",
+    "phone": "0837833333",
+    "email": "yeye@marketbiz.net",
+    "amount": 95000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87DF755EB7D",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "2 BULAN (60 HARI) (123456)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        95000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87DF755EB7D",
+        "TransactionId": 226594,
+        "ReferenceId": "STK/20260821/6A87DF755EB7D",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "QrString": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "PaymentName": "iPaymu",
+        "SubTotal": 95000,
+        "Fee": 665,
+        "Total": 95000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 12:17:43",
+        "QrImage": "https://sandbox.ipaymu.com/qris-basic/260821-88656-226594-121743",
+        "QrTemplate": "https://sandbox.ipaymu.com/qris/260821-88656-226594-121743",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2022173022171",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 12:18:32] ACTION: CALLBACK_WEBHOOK | REF: STK/20260821/6A87DF755EB7D | HTTP: 200 | STATUS: BERHASIL
+ENDPOINT: /yeye/optimus/callback-ipaymu.php
+REQUEST:
+{
+    "trx_id": 226594,
+    "sid": "STK/20260821/6A87DF755EB7D",
+    "reference_id": "STK/20260821/6A87DF755EB7D",
+    "status": "berhasil",
+    "status_code": 1,
+    "sub_total": "95000",
+    "total": "95000",
+    "amount": "95000",
+    "fee": "665",
+    "paid_off": 94335,
+    "created_at": "2026-08-21 12:17:43",
+    "expired_at": "2026-08-22 12:17:43",
+    "paid_at": "2026-08-21 12:18:18",
+    "settlement_status": "settled",
+    "transaction_status_code": 1,
+    "is_escrow": false,
+    "system_notes": "Sandbox notify",
+    "via": "qris",
+    "channel": "qris",
+    "payment_no": "",
+    "buyer_name": "YEYE",
+    "buyer_email": "yeye@marketbiz.net",
+    "buyer_phone": "0837833333",
+    "additional_info": [],
+    "url": "http://localhost:81/callback-ipaymu.php"
+}
+RESPONSE:
+{
+    "processed": true,
+    "timestamp": "2026-08-21 12:18:32"
+}
+=================================================================
+
+=================================================================
+[2026-08-21 12:19:10] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87DFCC6BDAA | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "YEYE",
+    "phone": "0837833333",
+    "email": "yeye@marketbiz.net",
+    "amount": 50000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87DFCC6BDAA",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "Perpanjangan 1 BULAN (30 HARI) (123456)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        50000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87DFCC6BDAA",
+        "TransactionId": 226595,
+        "ReferenceId": "STK/20260821/6A87DFCC6BDAA",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "QrString": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "PaymentName": "iPaymu",
+        "SubTotal": 50000,
+        "Fee": 350,
+        "Total": 50000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 12:19:10",
+        "QrImage": "https://sandbox.ipaymu.com/qris-basic/260821-88656-226595-121911",
+        "QrTemplate": "https://sandbox.ipaymu.com/qris/260821-88656-226595-121911",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2022173022171",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 12:19:22] ACTION: CHECK_TRANSACTION | REF: 226595 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/transaction
+REQUEST:
+{
+    "transactionId": "226595"
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "success",
+    "Data": {
+        "TransactionId": 226595,
+        "SessionId": "STK/20260821/6A87DFCC6BDAA",
+        "ReferenceId": "STK/20260821/6A87DFCC6BDAA",
+        "RelatedId": 0,
+        "Sender": "System",
+        "Receiver": "Cyrilus pranata",
+        "SubTotal": 50000,
+        "Fee": 350,
+        "Amount": 50000,
+        "Status": 0,
+        "StatusDesc": "Menunggu Pembayaran",
+        "PaidStatus": "unpaid",
+        "IsLocked": false,
+        "Type": 23,
+        "TypeDesc": "QRIS",
+        "Notes": "",
+        "CreatedDate": "2026-08-21 12:19:11",
+        "SuccessDate": null,
+        "ExpiredDate": "2026-08-22 12:19:10",
+        "SettlementDate": null,
+        "PaymentMethod": "qris",
+        "PaymentChannel": "QRIS",
+        "PaymentCode": "",
+        "PaymentName": "iPaymu",
+        "BuyerName": "YEYE",
+        "BuyerPhone": "0837833333",
+        "BuyerEmail": "yeye@marketbiz.net"
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 12:20:07] ACTION: CALLBACK_WEBHOOK | REF: STK/20260821/6A87DFCC6BDAA | HTTP: 200 | STATUS: BERHASIL
+ENDPOINT: /yeye/optimus/callback-ipaymu.php
+REQUEST:
+{
+    "trx_id": 226595,
+    "sid": "STK/20260821/6A87DFCC6BDAA",
+    "reference_id": "STK/20260821/6A87DFCC6BDAA",
+    "status": "berhasil",
+    "status_code": 1,
+    "sub_total": "50000",
+    "total": "50000",
+    "amount": "50000",
+    "fee": "350",
+    "paid_off": 49650,
+    "created_at": "2026-08-21 12:19:11",
+    "expired_at": "2026-08-22 12:19:10",
+    "paid_at": "2026-08-21 12:19:58",
+    "settlement_status": "settled",
+    "transaction_status_code": 1,
+    "is_escrow": false,
+    "system_notes": "Sandbox notify",
+    "via": "qris",
+    "channel": "qris",
+    "payment_no": "",
+    "buyer_name": "YEYE",
+    "buyer_email": "yeye@marketbiz.net",
+    "buyer_phone": "0837833333",
+    "additional_info": [],
+    "url": "http://localhost:81/callback-ipaymu.php"
+}
+RESPONSE:
+{
+    "processed": true,
+    "timestamp": "2026-08-21 12:20:07"
+}
+=================================================================
+
