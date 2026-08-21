@@ -75,10 +75,13 @@ if ($jenisMobilId) {
 
 // Logika untuk insert data baru (ketika form disubmit)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $produk_manual = strtoupper($_POST['produk_manual'] ?? '');
-    $harga_manual = $_POST['harga_manual'] ?? '';
-    $no_induk = strtoupper($_POST['no_induk'] ?? '');
-    $duration = (int)($_POST['durasi'] ?? 0);
+    $produk_manual  = strtoupper($_POST['produk_manual'] ?? '');
+    $harga_manual   = $_POST['harga_manual'] ?? '';
+    $no_induk       = strtoupper($_POST['no_induk'] ?? '');
+    $metode_bayar   = $_POST['metode_pembayaran'] ?? 'tunai';
+    $payment_channel = $_POST['payment_channel'] ?? 'qris';
+    $duration       = (int)($_POST['durasi'] ?? 0);
+    
     if ($duration === 99) {
         $duration = 365;
     }
@@ -94,62 +97,124 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Generate No Transaksi baru
             $new_notrans = 'STK/' . date('Ymd') . '/' . strtoupper(uniqid());
                 
-                // Persiapkan tanggal untuk perbandingan
-                $current_akhir_date = new DateTime($memberData['akhir']);
-                $current_akhir_date->setTime(0, 0, 0);
-                $today = new DateTime();
-                $today->setTime(0, 0, 0);
+            // Persiapkan tanggal untuk perbandingan
+            $current_akhir_date = new DateTime($memberData['akhir']);
+            $current_akhir_date->setTime(0, 0, 0);
+            $today = new DateTime();
+            $today->setTime(0, 0, 0);
 
-                $new_awal_date_str = $memberData['akhir']; // Start from current end date for extension
-                
-                // Cek apakah masa aktif sudah berakhir
-                if ($current_akhir_date < $today) {
-                    // KASUS 1: Masa aktif sudah berakhir
-                    // Periode baru dimulai dari hari ini
-                    $new_awal_date = clone $today;
-                    $new_akhir_date = clone $today;
-                    $new_akhir_date->add(new DateInterval("P{$duration}D"));
-                    $new_awal_date_str = $new_awal_date->format('Y-m-d H:i:s');
+            $new_awal_date_str = $memberData['akhir']; // Start from current end date for extension
+            
+            // Cek apakah masa aktif sudah berakhir
+            if ($current_akhir_date < $today) {
+                // KASUS 1: Masa aktif sudah berakhir, periode baru dimulai dari hari ini
+                $new_awal_date = clone $today;
+                $new_akhir_date = clone $today;
+                $new_akhir_date->add(new DateInterval("P{$duration}D"));
+                $new_awal_date_str = $new_awal_date->format('Y-m-d H:i:s');
+            } else {
+                // KASUS 2: Masa aktif masih berlaku, perpanjang dari tanggal akhir saat ini
+                $new_akhir_date = clone $current_akhir_date;
+                $new_akhir_date->add(new DateInterval("P{$duration}D"));
+                $new_awal_date_str = $memberData['akhir'];
+            }
+
+            $new_akhir_date->setTime(0, 0, 0);
+            $new_akhir_date_str = $new_akhir_date->format('Y-m-d H:i:s');
+
+            if ($metode_bayar === 'ipaymu') {
+                // Integrasi iPaymu untuk perpanjangan online
+                $ipaymuService = new IPaymuService($pdo);
+                $resIPaymu = $ipaymuService->createDirectPayment([
+                    'referenceId'    => $new_notrans,
+                    'name'           => $memberData['nama'],
+                    'phone'          => $memberData['telepon'] ?? '',
+                    'email'          => $memberData['email'] ?? '',
+                    'amount'         => floatval($harga_manual),
+                    'paymentChannel' => $payment_channel,
+                    'productName'    => 'Perpanjangan ' . $produk_manual . ' (' . ($detailData['nopol'] ?? '') . ')'
+                ]);
+
+                if ($resIPaymu['success'] && !empty($resIPaymu['data'])) {
+                    $ipaymuResult = $resIPaymu['data'];
+                    
+                    $pdo->beginTransaction();
+
+                    // 1. Simpan ke transaksi_stiker (Status PENDING)
+                    $stmt1 = $pdo->prepare(
+                        "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited, email, no_induk, no_kartu, status_bayar, payment_url, payment_no, payment_channel, payment_trx_id, qr_data_uri) "
+                        . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 1, NOW(), :email, :no_induk, :no_kartu, 'PENDING', :payment_url, :payment_no, :payment_channel, :payment_trx_id, :qr_data_uri)"
+                    );
+                    $stmt1->execute([
+                        ':notrans'         => $new_notrans,
+                        ':nama'            => $memberData['nama'],
+                        ':alamat'          => $memberData['alamat'],
+                        ':telepon'         => $memberData['telepon'],
+                        ':no_id'           => $memberData['no_id'],
+                        ':unit_kerja'      => $memberData['unit_kerja'],
+                        ':awal'            => $new_awal_date_str,
+                        ':akhir'           => $new_akhir_date_str,
+                        ':harga'           => $harga_manual,
+                        ':operator'        => $_SESSION['username'],
+                        ':email'           => $memberData['email'],
+                        ':no_induk'        => $no_induk,
+                        ':no_kartu'        => $memberData['no_kartu'] ?? '',
+                        ':payment_url'     => $ipaymuResult['QrTemplate'] ?? ($ipaymuResult['QrImage'] ?? ''),
+                        ':payment_no'      => $ipaymuResult['PaymentNo'] ?? '',
+                        ':payment_channel' => $payment_channel,
+                        ':payment_trx_id'  => (string)($ipaymuResult['TransactionId'] ?? ''),
+                        ':qr_data_uri'     => $ipaymuResult['QrDataUri'] ?? ''
+                    ]);
+
+                    // 2. Simpan ke detail_transaksi_stiker (Status 0: Menunggu Bayar)
+                    $stmt2 = $pdo->prepare(
+                        "INSERT INTO detail_transaksi_stiker (notrans, nopol, jenis_mobil, merk, tipe, tahun, warna, jenis_member, status) "
+                        . "VALUES (:notrans, :nopol, :jenis_mobil, :merk, :tipe, :tahun, :warna, :jenis_member, 0)"
+                    );
+                    $stmt2->execute([
+                        ':notrans'      => $new_notrans,
+                        ':nopol'        => $detailData['nopol'],
+                        ':jenis_mobil'  => $detailData['jenis_mobil'],
+                        ':merk'         => $detailData['merk'],
+                        ':tipe'         => $detailData['tipe'],
+                        ':tahun'        => $detailData['tahun'],
+                        ':warna'        => $detailData['warna'],
+                        ':jenis_member' => $produk_manual
+                    ]);
+
+                    $pdo->commit();
+
+                    // Redirect langsung ke halaman pembayaran & QRIS
+                    header('Location: bayar-member.php?notrans=' . urlencode($new_notrans));
+                    exit;
                 } else {
-                    // KASUS 2: Masa aktif masih berlaku
-                    // Perpanjang dari tanggal akhir saat ini
-                    $new_akhir_date = clone $current_akhir_date;
-                    $new_akhir_date->add(new DateInterval("P{$duration}D"));
-                    $new_awal_date_str = $memberData['akhir']; // Start from current end date
+                    $errorMsg = $resIPaymu['message'] ?? 'Gagal menghubungi server iPaymu.';
+                    $error = "Gagal membuat tagihan perpanjangan online. Error: " . $errorMsg;
                 }
-
-                $new_akhir_date->setTime(0, 0, 0);
-
-                $new_akhir_date_str = $new_akhir_date->format('Y-m-d H:i:s');
-
+            } else {
+                // Pembayaran TUNAI (Langsung Lunas & Aktif)
                 $pdo->beginTransaction();
 
                 // Insert new transaction in transaksi_stiker
                 $stmt1 = $pdo->prepare(
-                    "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited) "
-                    . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 1, NOW())"
+                    "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited, email, no_induk, no_kartu, status_bayar, payment_channel) "
+                    . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 1, NOW(), :email, :no_induk, :no_kartu, 'LUNAS', 'TUNAI')"
                 );
                 $stmt1->execute([
-                    ':notrans' => $new_notrans,
-                    ':nama' => $memberData['nama'],
-                    ':alamat' => $memberData['alamat'],
-                    ':telepon' => $memberData['telepon'],
-                    ':no_id' => $memberData['no_id'],
-                    ':unit_kerja' => $memberData['unit_kerja'],
-                    ':awal' => $new_awal_date_str,
-                    ':akhir' => $new_akhir_date_str,
-                    ':harga' => $harga_manual,
-                    ':operator' => $_SESSION['username']
+                    ':notrans'         => $new_notrans,
+                    ':nama'            => $memberData['nama'],
+                    ':alamat'          => $memberData['alamat'],
+                    ':telepon'         => $memberData['telepon'],
+                    ':no_id'           => $memberData['no_id'],
+                    ':unit_kerja'      => $memberData['unit_kerja'],
+                    ':awal'            => $new_awal_date_str,
+                    ':akhir'           => $new_akhir_date_str,
+                    ':harga'           => $harga_manual,
+                    ':operator'        => $_SESSION['username'],
+                    ':email'           => $memberData['email'],
+                    ':no_induk'        => $no_induk,
+                    ':no_kartu'        => $memberData['no_kartu'] ?? ''
                 ]);
-
-                // Update no_induk in the new transaction if provided
-                if (!empty($no_induk)) {
-                    $stmt_update_no_induk = $pdo->prepare("UPDATE transaksi_stiker SET no_induk = :no_induk WHERE notrans = :notrans");
-                    $stmt_update_no_induk->execute([
-                        ':no_induk' => $no_induk,
-                        ':notrans' => $new_notrans
-                    ]);
-                }
 
                 // Insert new detail in detail_transaksi_stiker
                 $stmt2 = $pdo->prepare(
@@ -157,13 +222,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     . "VALUES (:notrans, :nopol, :jenis_mobil, :merk, :tipe, :tahun, :warna, :jenis_member, 1)"
                 );
                 $stmt2->execute([
-                    ':notrans' => $new_notrans,
-                    ':nopol' => $detailData['nopol'],
-                    ':jenis_mobil' => $detailData['jenis_mobil'],
-                    ':merk' => $detailData['merk'],
-                    ':tipe' => $detailData['tipe'],
-                    ':tahun' => $detailData['tahun'],
-                    ':warna' => $detailData['warna'],
+                    ':notrans'      => $new_notrans,
+                    ':nopol'        => $detailData['nopol'],
+                    ':jenis_mobil'  => $detailData['jenis_mobil'],
+                    ':merk'         => $detailData['merk'],
+                    ':tipe'         => $detailData['tipe'],
+                    ':tahun'        => $detailData['tahun'],
+                    ':warna'        => $detailData['warna'],
                     ':jenis_member' => $produk_manual
                 ]);
 
@@ -186,7 +251,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $mail->isSMTP();
                         $mail->Host       = 'smtp.gmail.com';
                         $mail->SMTPAuth   = true;
-                        // Load email credentials from config or environment variables
                         $emailConfig = [
                             'username' => getenv('EMAIL_USERNAME') ?: 'your_email@gmail.com',
                             'password' => getenv('EMAIL_PASSWORD') ?: 'your_email_password'
@@ -219,6 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Redirect to print receipt
                 header('Location: cetak-kwitansi.php?notrans=' . urlencode($new_notrans));
                 exit;
+            }
 
         } catch (Exception $e) {
             if ($pdo->inTransaction()) {
@@ -288,8 +353,8 @@ ob_start();
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="harga_manual" class="form-label">Harga</label>
-                    <input type="number" class="form-control" id="harga_manual" name="harga_manual" min="0" value="0" readonly>
+                    <label for="harga_manual" class="form-label">Harga (Rp)</label>
+                    <input type="number" class="form-control fw-bold fs-5 text-primary" id="harga_manual" name="harga_manual" min="0" value="0" readonly>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="durasi" class="form-label">Durasi Periode (hari)</label>
@@ -297,10 +362,63 @@ ob_start();
                 </div>
             </div>
 
+            <!-- Metode Pembayaran -->
+            <div class="card mb-4 border bg-light">
+                <div class="card-header bg-white py-2">
+                    <h6 class="mb-0 fw-bold"><i class="fas fa-credit-card me-2 text-primary"></i>Metode Pembayaran</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-check p-3 border rounded bg-white h-100">
+                                <input class="form-check-input" type="radio" name="metode_pembayaran" id="metode_tunai" value="tunai" checked>
+                                <label class="form-check-label fw-bold d-block cursor-pointer" for="metode_tunai">
+                                    <i class="fas fa-money-bill-wave text-success me-1"></i> Tunai (Cash di Kasir)
+                                    <span class="d-block small text-muted fw-normal mt-1">Pembayaran langsung di loket kasir & aktif seketika.</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check p-3 border rounded bg-white h-100">
+                                <input class="form-check-input" type="radio" name="metode_pembayaran" id="metode_ipaymu" value="ipaymu">
+                                <label class="form-check-label fw-bold d-block cursor-pointer" for="metode_ipaymu">
+                                    <i class="fas fa-qrcode text-primary me-1"></i> iPaymu (QRIS & Virtual Account)
+                                    <span class="d-block small text-muted fw-normal mt-1">Bayar online via QRIS (BCA, GoPay, OVO, dll) atau Transfer VA.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary"> <i class="fas fa-calendar-check"></i> Perpanjang Sekarang</button>
-                <a href="transaksi-member.php" class="btn btn-secondary">Kembali ke Pencarian</a>
+                    <!-- Pilihan Channel iPaymu -->
+                    <div class="mt-3 p-3 bg-white border rounded d-none" id="ipaymu_channel_container">
+                        <label class="form-label fw-semibold mb-2">Pilih Jalur Pembayaran iPaymu:</label>
+                        <select name="payment_channel" id="payment_channel" class="form-select">
+                            <optgroup label="QRIS">
+                                <option value="qris" selected>QRIS (Semua Bank & E-Wallet: BCA, Mandiri, GoPay, OVO, Dana, ShopeePay)</option>
+                            </optgroup>
+                            <optgroup label="Virtual Account (Transfer Bank)">
+                                <option value="bca">Virtual Account BCA</option>
+                                <option value="mandiri">Virtual Account Mandiri</option>
+                                <option value="bni">Virtual Account BNI</option>
+                                <option value="bri">Virtual Account BRI</option>
+                                <option value="cimb">Virtual Account CIMB Niaga</option>
+                                <option value="permata">Virtual Account Permata</option>
+                            </optgroup>
+                        </select>
+                        <small class="text-muted mt-2 d-block">
+                            <i class="fas fa-info-circle me-1"></i> Status perpanjangan akan tersimpan sebagai <strong>Pending</strong> sampai pembayaran diselesaikan.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-calendar-check me-1"></i> Proses Perpanjangan Sekarang
+                </button>
+                <a href="transaksi-member.php" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Kembali ke Pencarian
+                </a>
             </div>
         </form>
     </div>
@@ -319,6 +437,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const produkManualSelect = document.getElementById('produk_manual');
     const hargaManualInput = document.getElementById('harga_manual');
     const durasiInput = document.getElementById('durasi');
+    const metodeTunai = document.getElementById('metode_tunai');
+    const metodeIPaymu = document.getElementById('metode_ipaymu');
+    const ipaymuChannelContainer = document.getElementById('ipaymu_channel_container');
 
     produkManualSelect.addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
@@ -334,6 +455,17 @@ document.addEventListener('DOMContentLoaded', function() {
             durasiInput.value = '0';
         }
     });
+
+    function togglePaymentChannel() {
+        if (metodeIPaymu.checked) {
+            ipaymuChannelContainer.classList.remove('d-none');
+        } else {
+            ipaymuChannelContainer.classList.add('d-none');
+        }
+    }
+
+    metodeTunai.addEventListener('change', togglePaymentChannel);
+    metodeIPaymu.addEventListener('change', togglePaymentChannel);
 });
 </script>
 

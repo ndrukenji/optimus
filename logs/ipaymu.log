@@ -1,0 +1,955 @@
+=================================================================
+[2026-08-20 16:36:08] ACTION: DIRECT_QRIS | REF: STK-LOG-TEST-001 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "LOG TEST MEMBER",
+    "phone": "081234567890",
+    "email": "test@example.com",
+    "amount": 150000,
+    "notifyUrl": "https://example.com/callback",
+    "referenceId": "STK-LOG-TEST-001",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "Paket Test Mobil"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        150000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK-LOG-TEST-001",
+        "TransactionId": 226421,
+        "ReferenceId": "STK-LOG-TEST-001",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "QrString": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "PaymentName": "iPaymu",
+        "SubTotal": 150000,
+        "Fee": 1050,
+        "Total": 150000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-21 16:36:08",
+        "QrImage": "https://sandbox.ipaymu.com/qris-basic/260820-88656-226421-163608",
+        "QrTemplate": "https://sandbox.ipaymu.com/qris/260820-88656-226421-163608",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2022173022171",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-20 16:40:10] ACTION: DIRECT_QRIS | REF: STK-UNIT-TEST-1787218808 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "TESTING SERVICE",
+    "phone": "081234567890",
+    "email": "service@test.com",
+    "amount": 1400000,
+    "notifyUrl": "https://localhost/callback-ipaymu.php",
+    "referenceId": "STK-UNIT-TEST-1787218808",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "TAHUNAN (365 HARI) (B 9999 XYZ)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        1400000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK-UNIT-TEST-1787218808",
+        "TransactionId": 226428,
+        "ReferenceId": "STK-UNIT-TEST-1787218808",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "QrString": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "PaymentName": "iPaymu",
+        "SubTotal": 1400000,
+        "Fee": 9800,
+        "Total": 1400000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-21 16:40:09",
+        "QrImage": "https://sandbox.ipaymu.com/qris-basic/260820-88656-226428-164010",
+        "QrTemplate": "https://sandbox.ipaymu.com/qris/260820-88656-226428-164010",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2022173022171",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-20 16:41:31] ACTION: DIRECT_QRIS | REF: STK/20260820/6A86CBCA5ED1D | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "AD VOLUPTATEM ODIT E",
+    "phone": "AD ADIPISCI AUT ET E",
+    "email": "napaliqucu@mailinator.com",
+    "amount": 580000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260820/6A86CBCA5ED1D",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "2 BULAN (60 HARI) (SED CUMQUE SAEPE QUI)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        580000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260820/6A86CBCA5ED1D",
+        "TransactionId": 226429,
+        "ReferenceId": "STK/20260820/6A86CBCA5ED1D",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "QrString": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "PaymentName": "iPaymu",
+        "SubTotal": 580000,
+        "Fee": 4060,
+        "Total": 580000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-21 16:41:31",
+        "QrImage": "https://sandbox.ipaymu.com/qris-basic/260820-88656-226429-164131",
+        "QrTemplate": "https://sandbox.ipaymu.com/qris/260820-88656-226429-164131",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2022173022171",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-20 16:53:16] ACTION: DIRECT_QRIS | REF: STK/20260820/6A86CE8BE787D | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "TESS",
+    "phone": "DOLORE QUIS NEMO LAB",
+    "email": "xypuvy@mailinator.com",
+    "amount": 280000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260820/6A86CE8BE787D",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "2 BULAN (60 HARI) (DESERUNT NOSTRUM OMN)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        280000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260820/6A86CE8BE787D",
+        "TransactionId": 37184651,
+        "ReferenceId": "STK/20260820/6A86CE8BE787D",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409280000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAO3IQ1A0620202608201653165334640703A010804POSP99180002000108202608206304519F",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409280000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAO3IQ1A0620202608201653165334640703A010804POSP99180002000108202608206304519F",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 280000,
+        "Fee": 1960,
+        "Total": 280000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-21 16:53:16",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260820-68381-37184651-165316",
+        "QrTemplate": "https://my.ipaymu.com/qris/260820-68381-37184651-165316",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-20 17:01:42] ACTION: DIRECT_QRIS | REF: STK/20260820/6A86D08664DE6 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "TEYEYE",
+    "phone": "VELIT FUGIAT DICTA",
+    "email": "gopunufuq@mailinator.com",
+    "amount": 150000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260820/6A86D08664DE6",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "1 BULAN (30 HARI) (QUI NOSTRUD EXERCITA)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        150000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260820/6A86D08664DE6",
+        "TransactionId": 37184748,
+        "ReferenceId": "STK/20260820/6A86D08664DE6",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAO3LEO50620202608201701429955870703A010804POSP99180002000108202608206304BFB2",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAO3LEO50620202608201701429955870703A010804POSP99180002000108202608206304BFB2",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 150000,
+        "Fee": 1050,
+        "Total": 150000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-21 17:01:42",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260820-68381-37184748-170143",
+        "QrTemplate": "https://my.ipaymu.com/qris/260820-68381-37184748-170143",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:18:38] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87C38BD389A | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "AB ID ID FUGIAT DOLO",
+    "phone": "CONSEQUATUR DUCIMUS",
+    "email": "wosal@mailinator.com",
+    "amount": 300000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87C38BD389A",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "1 BULAN (30 HARI) (APERIAM AD ASPERNATU)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        300000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87C38BD389A",
+        "TransactionId": 37193341,
+        "ReferenceId": "STK/20260821/6A87C38BD389A",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409300000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCP8ZF0620202608211018387735100703A010804POSP99180002000108202608216304C7AE",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409300000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCP8ZF0620202608211018387735100703A010804POSP99180002000108202608216304C7AE",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 300000,
+        "Fee": 2100,
+        "Total": 300000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:18:38",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193341-101839",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193341-101839",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:20:04] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87C3E434B30 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "OFFICIIS DICTA ATQUE",
+    "phone": "HIC ET EST EX ASSUM",
+    "email": "boso@mailinator.com",
+    "amount": 250000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87C3E434B30",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "1 BULAN (30 HARI) (12332)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        250000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87C3E434B30",
+        "TransactionId": 37193362,
+        "ReferenceId": "STK/20260821/6A87C3E434B30",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409250000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCPK620620202608211020053812060703A010804POSP99180002000108202608216304B2F5",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409250000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCPK620620202608211020053812060703A010804POSP99180002000108202608216304B2F5",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 250000,
+        "Fee": 1750,
+        "Total": 250000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:20:05",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193362-102005",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193362-102005",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:22:20] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87C46BDD3CE | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "OFFICIIS DICTA ATQUE",
+    "phone": "HIC ET EST EX ASSUM",
+    "email": "boso@mailinator.com",
+    "amount": 250000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87C46BDD3CE",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "1 BULAN (30 HARI) (12332)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        250000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87C46BDD3CE",
+        "TransactionId": 37193394,
+        "ReferenceId": "STK/20260821/6A87C46BDD3CE",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409250000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQ1VE0620202608211022211927130703A010804POSP991800020001082026082163048A04",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409250000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQ1VE0620202608211022211927130703A010804POSP991800020001082026082163048A04",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 250000,
+        "Fee": 1750,
+        "Total": 250000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:22:21",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193394-102221",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193394-102221",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:22:55] ACTION: CHECK_TRANSACTION | REF: 37193394 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/transaction
+REQUEST:
+{
+    "transactionId": "37193394"
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "success",
+    "Data": {
+        "TransactionId": 37193394,
+        "SessionId": "STK/20260821/6A87C46BDD3CE",
+        "ReferenceId": "STK/20260821/6A87C46BDD3CE",
+        "RelatedId": 0,
+        "Sender": "System",
+        "Receiver": "Resellr.id",
+        "SubTotal": 250000,
+        "Fee": 1750,
+        "Amount": 250000,
+        "Status": 0,
+        "StatusDesc": "Menunggu Pembayaran",
+        "PaidStatus": "unpaid",
+        "IsLocked": false,
+        "Type": 23,
+        "TypeDesc": "QRIS",
+        "Notes": "",
+        "CreatedDate": "2026-08-21 10:22:21",
+        "SuccessDate": null,
+        "ExpiredDate": "2026-08-22 10:22:21",
+        "SettlementDate": null,
+        "PaymentMethod": "qris",
+        "PaymentChannel": "QRIS",
+        "PaymentCode": "",
+        "PaymentName": "RESELLLR ID",
+        "BuyerName": "OFFICIIS DICTA ATQUE",
+        "BuyerPhone": "HIC ET EST EX ASSUM",
+        "BuyerEmail": "boso@mailinator.com"
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:23:17] ACTION: DIRECT_VA | REF: STK/20260821/6A87C4A520175 | HTTP: 400 | STATUS: FAILED
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "OFFICIIS DICTA ATQUE",
+    "phone": "HIC ET EST EX ASSUM",
+    "email": "boso@mailinator.com",
+    "amount": 250000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87C4A520175",
+    "paymentMethod": "va",
+    "paymentChannel": "bca",
+    "product": [
+        "1 BULAN (30 HARI) (12332)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        250000
+    ]
+}
+RESPONSE:
+{
+    "Status": 400,
+    "Success": false,
+    "Message": "phone harus berupa angka.",
+    "Data": null
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:24:28] ACTION: DIRECT_QRIS | REF: STK-PHONE-TEST-1787282664-550 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "TEST PHONE SANITIZE",
+    "phone": "081234567890",
+    "email": "test@example.com",
+    "amount": 150000,
+    "notifyUrl": "https://localhost/callback-ipaymu.php",
+    "referenceId": "STK-PHONE-TEST-1787282664-550",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "Uji Nomor Telepon"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        150000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK-PHONE-TEST-1787282664-550",
+        "TransactionId": 37193422,
+        "ReferenceId": "STK-PHONE-TEST-1787282664-550",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQJ6B0620202608211024295165420703A010804POSP9918000200010820260821630448DC",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQJ6B0620202608211024295165420703A010804POSP9918000200010820260821630448DC",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 150000,
+        "Fee": 1050,
+        "Total": 150000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:24:29",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193422-102429",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193422-102429",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:24:30] ACTION: DIRECT_QRIS | REF: STK-PHONE-TEST-1787282669-215 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "TEST PHONE SANITIZE",
+    "phone": "6281234567890",
+    "email": "test@example.com",
+    "amount": 150000,
+    "notifyUrl": "https://localhost/callback-ipaymu.php",
+    "referenceId": "STK-PHONE-TEST-1787282669-215",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "Uji Nomor Telepon"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        150000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK-PHONE-TEST-1787282669-215",
+        "TransactionId": 37193423,
+        "ReferenceId": "STK-PHONE-TEST-1787282669-215",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQJE30620202608211024311432240703A010804POSP99180002000108202608216304F311",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQJE30620202608211024311432240703A010804POSP99180002000108202608216304F311",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 150000,
+        "Fee": 1050,
+        "Total": 150000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:24:31",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193423-102431",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193423-102431",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:24:34] ACTION: DIRECT_QRIS | REF: STK-PHONE-TEST-1787282671-206 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "TEST PHONE SANITIZE",
+    "phone": "081234567890",
+    "email": "test@example.com",
+    "amount": 150000,
+    "notifyUrl": "https://localhost/callback-ipaymu.php",
+    "referenceId": "STK-PHONE-TEST-1787282671-206",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "Uji Nomor Telepon"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        150000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK-PHONE-TEST-1787282671-206",
+        "TransactionId": 37193425,
+        "ReferenceId": "STK-PHONE-TEST-1787282671-206",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQJW40620202608211024348812450703A010804POSP991800020001082026082163046A8C",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQJW40620202608211024348812450703A010804POSP991800020001082026082163046A8C",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 150000,
+        "Fee": 1050,
+        "Total": 150000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:24:34",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193425-102434",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193425-102434",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:24:36] ACTION: DIRECT_QRIS | REF: STK-PHONE-TEST-1787282675-665 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "TEST PHONE SANITIZE",
+    "phone": "081234567890",
+    "email": "test@example.com",
+    "amount": 150000,
+    "notifyUrl": "https://localhost/callback-ipaymu.php",
+    "referenceId": "STK-PHONE-TEST-1787282675-665",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "Uji Nomor Telepon"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        150000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK-PHONE-TEST-1787282675-665",
+        "TransactionId": 37193426,
+        "ReferenceId": "STK-PHONE-TEST-1787282675-665",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQKA80620202608211024377469930703A010804POSP991800020001082026082163041BDB",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409150000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQKA80620202608211024377469930703A010804POSP991800020001082026082163041BDB",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 150000,
+        "Fee": 1050,
+        "Total": 150000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:24:37",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193426-102437",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193426-102437",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:26:27] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87C55FE6A24 | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "OFFICIIS DICTA ATQUE",
+    "phone": "081234567890",
+    "email": "boso@mailinator.com",
+    "amount": 250000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87C55FE6A24",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "1 BULAN (30 HARI) (12332)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        250000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87C55FE6A24",
+        "TransactionId": 37193446,
+        "ReferenceId": "STK/20260821/6A87C55FE6A24",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409250000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQYPV0620202608211026278525950703A010804POSP991800020001082026082163040A91",
+        "QrString": "00020101021226670016COM.NOBUBANK.WWW01189360050300000870180214000390206083010303UME51440014ID.CO.QRIS.WWW0303UME0215ID20253711732175204596953033605409250000.005802ID5911RESELLLR ID6008DENPASAR61058011162730108MAOCQYPV0620202608211026278525950703A010804POSP991800020001082026082163040A91",
+        "PaymentName": "RESELLLR ID",
+        "SubTotal": 250000,
+        "Fee": 1750,
+        "Total": 250000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:26:27",
+        "QrImage": "https://my.ipaymu.com/qris-basic/260821-68381-37193446-102627",
+        "QrTemplate": "https://my.ipaymu.com/qris/260821-68381-37193446-102627",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2025371173217",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 10:26:38] ACTION: DIRECT_VA | REF: STK/20260821/6A87C56C8A2CE | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://my.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "OFFICIIS DICTA ATQUE",
+    "phone": "081234567890",
+    "email": "boso@mailinator.com",
+    "amount": 250000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87C56C8A2CE",
+    "paymentMethod": "va",
+    "paymentChannel": "bca",
+    "product": [
+        "1 BULAN (30 HARI) (12332)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        250000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87C56C8A2CE",
+        "TransactionId": 37193452,
+        "ReferenceId": "STK/20260821/6A87C56C8A2CE",
+        "Via": "VA",
+        "Channel": "BCA",
+        "PaymentNo": "3811800086338158",
+        "PaymentName": "Hallo Bali",
+        "SubTotal": 250000,
+        "Fee": 4500,
+        "Total": 250000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 10:26:38",
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 11:22:40] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87D28F478BC | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "ERROR DUCIMUS AUT S",
+    "phone": "081234567890",
+    "email": "cydecipyli@mailinator.com",
+    "amount": 300000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87D28F478BC",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "1 BULAN (30 HARI) (VOLUPTATUM IPSA ACC)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        300000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87D28F478BC",
+        "TransactionId": 226590,
+        "ReferenceId": "STK/20260821/6A87D28F478BC",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "QrString": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "PaymentName": "iPaymu",
+        "SubTotal": 300000,
+        "Fee": 2100,
+        "Total": 300000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 11:22:41",
+        "QrImage": "https://sandbox.ipaymu.com/qris-basic/260821-88656-226590-112241",
+        "QrTemplate": "https://sandbox.ipaymu.com/qris/260821-88656-226590-112241",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2022173022171",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+
+=================================================================
+[2026-08-21 11:28:51] ACTION: CALLBACK_WEBHOOK | REF: STK/20260821/6A87D28F478BC | HTTP: 200 | STATUS: BERHASIL
+ENDPOINT: /yeye/optimus/callback-ipaymu.php
+REQUEST:
+{
+    "trx_id": 226590,
+    "sid": "STK/20260821/6A87D28F478BC",
+    "reference_id": "STK/20260821/6A87D28F478BC",
+    "status": "berhasil",
+    "status_code": 1,
+    "sub_total": "300000",
+    "total": "300000",
+    "amount": "300000",
+    "fee": "2100",
+    "paid_off": 297900,
+    "created_at": "2026-08-21 11:22:41",
+    "expired_at": "2026-08-22 11:22:41",
+    "paid_at": "2026-08-21 11:23:34",
+    "settlement_status": "settled",
+    "transaction_status_code": 1,
+    "is_escrow": false,
+    "system_notes": "Sandbox notify",
+    "via": "qris",
+    "channel": "qris",
+    "payment_no": "",
+    "buyer_name": "ERROR DUCIMUS AUT S",
+    "buyer_email": "cydecipyli@mailinator.com",
+    "buyer_phone": "081234567890",
+    "additional_info": [],
+    "url": "http://localhost:81/callback-ipaymu.php"
+}
+RESPONSE:
+{
+    "processed": true,
+    "timestamp": "2026-08-21 11:28:51"
+}
+=================================================================
+
+=================================================================
+[2026-08-21 11:57:52] ACTION: DIRECT_QRIS | REF: STK/20260821/6A87DACD6939B | HTTP: 200 | STATUS: SUCCESS
+ENDPOINT: https://sandbox.ipaymu.com/api/v2/payment/direct
+REQUEST:
+{
+    "name": "ERROR DUCIMUS AUT S",
+    "phone": "081234567890",
+    "email": "member@example.com",
+    "amount": 300000,
+    "notifyUrl": "http://localhost:81/callback-ipaymu.php",
+    "referenceId": "STK/20260821/6A87DACD6939B",
+    "paymentMethod": "qris",
+    "paymentChannel": "mpm",
+    "product": [
+        "Perpanjangan 1 BULAN (30 HARI) (VOLUPTATUM IPSA ACC)"
+    ],
+    "qty": [
+        1
+    ],
+    "price": [
+        300000
+    ]
+}
+RESPONSE:
+{
+    "Status": 200,
+    "Success": true,
+    "Message": "Success",
+    "Data": {
+        "SessionId": "STK/20260821/6A87DACD6939B",
+        "TransactionId": 226593,
+        "ReferenceId": "STK/20260821/6A87DACD6939B",
+        "Via": "QRIS",
+        "Channel": "MPM",
+        "PaymentNo": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "QrString": "IPAYMU-SANDBOX-DEMO\\n===================\\nTHIS IS NOT A REAL QRIS\\nDO NOT SCAN\\nDO NOT PAY\\nFOR UI TESTING ONLY",
+        "PaymentName": "iPaymu",
+        "SubTotal": 300000,
+        "Fee": 2100,
+        "Total": 300000,
+        "FeeDirection": "MERCHANT",
+        "Expired": "2026-08-22 11:57:52",
+        "QrImage": "https://sandbox.ipaymu.com/qris-basic/260821-88656-226593-115753",
+        "QrTemplate": "https://sandbox.ipaymu.com/qris/260821-88656-226593-115753",
+        "Terminal": "A01",
+        "NNSCode": "93600503",
+        "NMID": "ID2022173022171",
+        "Note": null,
+        "Escrow": false
+    }
+}
+=================================================================
+

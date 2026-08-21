@@ -18,50 +18,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['location'])) {
 $location = $_SESSION['location'];
 $pdo = connectDB($location);
 
-// ==========================================
-// KONFIGURASI IPAYMU PAYMENT GATEWAY
-// ==========================================
-$ipaymu_va       = '1179000899'; // Isi dengan VA iPaymu Anda dari Dashboard
-$ipaymu_apiKey   = 'QbGcoO0Qds9sQFDmY0MWg1Tq.xtuh1'; // Isi dengan API Key dari Dashboard
-$ipaymu_sandbox  = true; // Ubah ke false untuk mode Production (Live)
 
-/**
- * Fungsi pembantu untuk mengirim HTTP Request ke iPaymu API v2
- */
-function sendIPaymuRequest($endpointUrl, $va, $apiKey, array $bodyData) {
-    $jsonBody      = json_encode($bodyData, JSON_UNESCAPED_SLASHES);
-    $requestBody   = strtolower(hash('sha256', $jsonBody));
-    $stringToSign  = 'POST:' . $va . ':' . $requestBody . ':' . $apiKey;
-    $signature     = hash_hmac('sha256', $stringToSign, $apiKey);
-    $timestamp     = date('YmdHis');
-
-    $headers = [
-        'Accept: application/json',
-        'Content-Type: application/json',
-        'va: ' . $va,
-        'signature: ' . $signature,
-        'timestamp: ' . $timestamp
-    ];
-
-    $ch = curl_init($endpointUrl);
-    curl_setopt($ch, CURLOPT_HEADER, false);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonBody);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Pada production server pastikan bernilai true
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-    $response = curl_exec($ch);
-    $err      = curl_error($ch);
-    curl_close($ch);
-
-    if ($err) {
-        return ['status' => false, 'message' => 'cURL Error: ' . $err];
-    }
-
-    return ['status' => true, 'raw' => $response, 'data' => json_decode($response, true)];
-}
 
 // Cek dan tambahkan field email jika belum ada
 try {
@@ -151,89 +108,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $no_id = 'MEMBER-' . time();
                 }
 
-                $pdo->beginTransaction();
-
-                // Insert ke transaksi_stiker
-                $stmt1 = $pdo->prepare(
-                    "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited, email, no_induk) "
-                    . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 0, NOW(), :email, :no_kartu)"
-                );
-                $stmt1->execute([
-                    ':notrans'    => $notrans,
-                    ':nama'       => $nama,
-                    ':alamat'     => $alamat,
-                    ':telepon'    => $telepon,
-                    ':no_id'      => $notrans,
-                    ':unit_kerja' => $unit_kerja,
-                    ':awal'       => $awal_date->format('Y-m-d H:i:s'),
-                    ':akhir'      => $akhir_date->format('Y-m-d H:i:s'),
-                    ':harga'      => $harga,
-                    ':operator'   => $_SESSION['username'],
-                    ':email'      => $email,
-                    ':no_kartu'   => $no_kartu
-                ]);
-
-                // Insert ke detail_transaksi_stiker
-                $stmt2 = $pdo->prepare(
-                    "INSERT INTO detail_transaksi_stiker (notrans, nopol, jenis_mobil, merk, tipe, tahun, warna, jenis_member, status) "
-                    . "VALUES (:notrans, :nopol, :jenis_mobil, :merk, :tipe, :tahun, :warna, :jenis_member, 1)"
-                );
-                $stmt2->execute([
-                    ':notrans'      => $notrans,
-                    ':nopol'        => $nopol,
-                    ':jenis_mobil'  => $jenis_mobil_id,
-                    ':merk'         => $merk,
-                    ':tipe'         => $tipe,
-                    ':tahun'        => $tahun,
-                    ':warna'        => $warna,
-                    ':jenis_member' => $jenis_langganan
-                ]);
-
-                $pdo->commit();
-
                 // JIKA METODE PEMBAYARAN ADALAH IPAYMU
                 if ($cara_pembayaran === 'IPAYMU' && floatval($harga) > 0) {
-                    $endpointUrl = $ipaymu_sandbox 
-                        ? 'https://sandbox.ipaymu.com/api/v2/payment/direct' 
-                        : 'https://my.ipaymu.com/api/v2/payment/direct';
-
-                    $paymentBody = [
-                        'name'           => trim($nama),
-                        'phone'          => !empty($telepon) ? trim($telepon) : "081234567890",
-                        'email'          => !empty($email) ? trim($email) : "member@example.com",
-                        'amount'         => floatval($harga),
-                        'notifyUrl'      => 'https://' . $_SERVER['HTTP_HOST'] . '/callback-ipaymu.php', // Ubah URL Callback
+                    $ipaymuService = new IPaymuService($pdo);
+                    $resIPaymu = $ipaymuService->createDirectPayment([
                         'referenceId'    => $notrans,
-                        'paymentMethod'  => 'va', // Metode default VA
-                        'paymentChannel' => strtolower($payment_channel)
-                    ];
+                        'name'           => $nama,
+                        'phone'          => $telepon,
+                        'email'          => $email,
+                        'amount'         => floatval($harga),
+                        'paymentChannel' => $payment_channel,
+                        'productName'    => $jenis_langganan . ' (' . $nopol . ')'
+                    ]);
 
-                    $resIPaymu = sendIPaymuRequest($endpointUrl, $ipaymu_va, $ipaymu_apiKey, $paymentBody);
-
-                    if ($resIPaymu['status'] && isset($resIPaymu['data']['Status']) && $resIPaymu['data']['Status'] == 200) {
-                        $ipaymuResult = $resIPaymu['data']['Data'];
+                    if ($resIPaymu['success'] && !empty($resIPaymu['data'])) {
+                        $ipaymuResult = $resIPaymu['data'];
 
                         // Jika iPaymu berhasil, baru simpan data ke database
                         $pdo->beginTransaction();
 
-                        // Insert ke transaksi_stiker
+                        // Insert ke transaksi_stiker (Status PENDING untuk pembayaran online)
                         $stmt1 = $pdo->prepare(
-                            "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited, email, no_induk) "
-                            . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 0, NOW(), :email, :no_kartu)"
+                            "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited, email, no_induk, status_bayar, payment_url, payment_no, payment_channel, payment_trx_id, qr_data_uri) "
+                            . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 0, NOW(), :email, :no_kartu, 'PENDING', :payment_url, :payment_no, :payment_channel, :payment_trx_id, :qr_data_uri)"
                         );
                         $stmt1->execute([
-                            ':notrans'    => $notrans,
-                            ':nama'       => $nama,
-                            ':alamat'     => $alamat,
-                            ':telepon'    => $telepon,
-                            ':no_id'      => $notrans,
-                            ':unit_kerja' => $unit_kerja,
-                            ':awal'       => $awal_date->format('Y-m-d H:i:s'),
-                            ':akhir'      => $akhir_date->format('Y-m-d H:i:s'),
-                            ':harga'      => $harga,
-                            ':operator'   => $_SESSION['username'],
-                            ':email'      => $email,
-                            ':no_kartu'   => $no_kartu
+                            ':notrans'         => $notrans,
+                            ':nama'            => $nama,
+                            ':alamat'          => $alamat,
+                            ':telepon'         => $telepon,
+                            ':no_id'           => $notrans,
+                            ':unit_kerja'      => $unit_kerja,
+                            ':awal'            => $awal_date->format('Y-m-d H:i:s'),
+                            ':akhir'           => $akhir_date->format('Y-m-d H:i:s'),
+                            ':harga'           => $harga,
+                            ':operator'        => $_SESSION['username'],
+                            ':email'           => $email,
+                            ':no_kartu'        => $no_kartu,
+                            ':payment_url'     => $ipaymuResult['QrTemplate'] ?? ($ipaymuResult['QrImage'] ?? ''),
+                            ':payment_no'      => $ipaymuResult['PaymentNo'] ?? '',
+                            ':payment_channel' => $payment_channel,
+                            ':payment_trx_id'  => (string)($ipaymuResult['TransactionId'] ?? ''),
+                            ':qr_data_uri'     => $ipaymuResult['QrDataUri'] ?? ''
                         ]);
 
                         // Update no_induk in the new transaction if provided
@@ -245,10 +161,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ]);
                         }
 
-                        // Insert ke detail_transaksi_stiker
+                        // Insert ke detail_transaksi_stiker (Status = 0: Menunggu Pembayaran)
                         $stmt2 = $pdo->prepare(
                             "INSERT INTO detail_transaksi_stiker (notrans, nopol, jenis_mobil, merk, tipe, tahun, warna, jenis_member, status) "
-                            . "VALUES (:notrans, :nopol, :jenis_mobil, :merk, :tipe, :tahun, :warna, :jenis_member, 1)"
+                            . "VALUES (:notrans, :nopol, :jenis_mobil, :merk, :tipe, :tahun, :warna, :jenis_member, 0)"
                         );
                         $stmt2->execute([
                             ':notrans'      => $notrans,
@@ -262,20 +178,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ]);
 
                         $pdo->commit();
-                        $success = "Member baru berhasil didaftarkan! Silakan lakukan pembayaran sesuai instruksi Virtual Account di bawah.";
+                        $success = "Tagihan pembayaran online berhasil dibuat! Menunggu pembayaran dari member...";
 
                     } else {
-                        $errorMsg = $resIPaymu['data']['Message'] ?? $resIPaymu['message'] ?? 'Gagal menghubungkan ke iPaymu.';
+                        $errorMsg = $resIPaymu['message'] ?? 'Gagal menghubungkan ke iPaymu.';
                         $error = "Gagal membuat tagihan pembayaran online, data tidak disimpan. Error: " . $errorMsg;
                     }
                 } else {
-                    // Untuk pembayaran TUNAI, simpan langsung
+                    // Untuk pembayaran TUNAI, simpan langsung dengan status LUNAS dan aktif (status = 1)
                     $pdo->beginTransaction();
 
                     // Insert ke transaksi_stiker
                     $stmt1 = $pdo->prepare(
-                        "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited, email, no_induk) "
-                        . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 0, NOW(), :email, :no_kartu)"
+                        "INSERT INTO transaksi_stiker (notrans, nama, alamat, telepon, no_id, unit_kerja, awal, akhir, harga, tanggal, operator, jenis_transaksi, tgl_edited, email, no_induk, status_bayar, payment_channel) "
+                        . "VALUES (:notrans, :nama, :alamat, :telepon, :no_id, :unit_kerja, :awal, :akhir, :harga, NOW(), :operator, 0, NOW(), :email, :no_kartu, 'LUNAS', 'TUNAI')"
                     );
                     $stmt1->execute([
                         ':notrans'    => $notrans,
@@ -301,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ]);
                     }
 
-                    // Insert ke detail_transaksi_stiker
+                    // Insert ke detail_transaksi_stiker (Status = 1: Aktif Langsung)
                     $stmt2 = $pdo->prepare(
                         "INSERT INTO detail_transaksi_stiker (notrans, nopol, jenis_mobil, merk, tipe, tahun, warna, jenis_member, status) "
                         . "VALUES (:notrans, :nopol, :jenis_mobil, :merk, :tipe, :tahun, :warna, :jenis_member, 1)"
@@ -400,29 +316,64 @@ ob_start();
         <?php endif; ?>
     </div>
 
-    <!-- TAMPILAN RESI / INSTRUKSI VA IPAYMU -->
-    <?php if ($ipaymuResult): ?>
-        <div class="card border-primary mb-4">
+    <!-- TAMPILAN RESI / INSTRUKSI PEMBAYARAN IPAYMU -->
+    <?php if ($ipaymuResult): 
+        $isQris = !empty($ipaymuResult['QrImage']) || !empty($ipaymuResult['QrString']) || (strtolower($ipaymuResult['PaymentMethod'] ?? '') === 'qris') || (strtolower($payment_channel ?? '') === 'qris') || (strtolower($payment_channel ?? '') === 'mpm');
+    ?>
+        <div class="card border-primary mb-4 shadow-sm">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Instruksi Pembayaran Virtual Account (iPaymu)</h5>
-                <span class="badge bg-light text-primary"><?= strtoupper(htmlspecialchars($ipaymuResult['PaymentChannel'] ?? 'VA')) ?></span>
+                <h5 class="mb-0">
+                    <i class="<?= $isQris ? 'fas fa-qrcode' : 'fas fa-credit-card' ?> me-2"></i>
+                    Instruksi Pembayaran <?= $isQris ? 'QRIS (Scan & Pay)' : 'Online (iPaymu)' ?>
+                </h5>
+                <span class="badge bg-light text-primary"><?= strtoupper(htmlspecialchars($ipaymuResult['PaymentChannel'] ?? ($isQris ? 'QRIS' : 'VA'))) ?></span>
             </div>
             <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-6 mb-3 border-end">
-                        <small class="text-muted d-block mb-1">Nomor Virtual Account / Kode Bayar</small>
-                        <h2 class="fw-bold text-success select-all"><?= htmlspecialchars($ipaymuResult['PaymentNo'] ?? '-') ?></h2>
+                <?php if ($isQris): ?>
+                    <div class="row align-items-center">
+                        <div class="col-md-5 text-center mb-3 mb-md-0 border-end">
+                            <?php if (!empty($ipaymuResult['QrDataUri'])): ?>
+                                <img src="<?= $ipaymuResult['QrDataUri'] ?>" alt="QR Code QRIS" class="img-fluid border p-2 rounded shadow-sm bg-white" style="max-width: 220px;">
+                            <?php elseif (!empty($ipaymuResult['QrString'])): ?>
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=<?= urlencode($ipaymuResult['QrString']) ?>" alt="QR Code QRIS" class="img-fluid border p-2 rounded shadow-sm bg-white" style="max-width: 220px;">
+                            <?php endif; ?>
+                            <div class="mt-2 text-muted small"><i class="fas fa-camera me-1"></i> Scan QRIS dengan aplikasi m-Banking / e-Wallet</div>
+                            <?php if (!empty($ipaymuResult['QrTemplate'])): ?>
+                                <div class="mt-2">
+                                    <a href="<?= htmlspecialchars($ipaymuResult['QrTemplate']) ?>" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;">
+                                        <i class="fas fa-external-link-alt me-1"></i> Buka Template Asli iPaymu
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-7">
+                            <h4 class="fw-bold text-dark mb-1">Total Pembayaran:</h4>
+                            <h2 class="fw-bold text-primary mb-3">Rp <?= number_format($ipaymuResult['Total'] ?? $harga, 0, ',', '.') ?></h2>
+                            <ul class="list-unstyled text-secondary small mb-3">
+                                <li class="mb-1"><i class="fas fa-check-circle text-success me-2"></i>Buka aplikasi m-Banking (BCA, Mandiri, BRI, BNI) atau e-Wallet (GoPay, OVO, DANA, ShopeePay).</li>
+                                <li class="mb-1"><i class="fas fa-check-circle text-success me-2"></i>Pilih menu <strong>Scan QRIS</strong> dan arahkan kamera ke QR Code di samping.</li>
+                                <li class="mb-1"><i class="fas fa-check-circle text-success me-2"></i>Periksa nama merchant dan nominal, lalu konfirmasi pembayaran.</li>
+                            </ul>
+                            <small class="text-muted">Kadaluarsa: <strong><?= htmlspecialchars($ipaymuResult['Expired'] ?? '24 Jam') ?></strong></small>
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <small class="text-muted d-block mb-1">Total Harus Dibayar</small>
-                        <h2 class="fw-bold text-primary">Rp <?= number_format($ipaymuResult['Total'] ?? 0, 0, ',', '.') ?></h2>
+                <?php else: ?>
+                    <div class="row text-center">
+                        <div class="col-md-6 mb-3 border-end">
+                            <small class="text-muted d-block mb-1">Nomor Virtual Account / Kode Bayar</small>
+                            <h2 class="fw-bold text-success select-all"><?= htmlspecialchars($ipaymuResult['PaymentNo'] ?? '-') ?></h2>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <small class="text-muted d-block mb-1">Total Harus Dibayar</small>
+                            <h2 class="fw-bold text-primary">Rp <?= number_format($ipaymuResult['Total'] ?? 0, 0, ',', '.') ?></h2>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
                 <hr>
                 <div class="d-flex justify-content-between align-items-center">
                     <small class="text-muted">No. Referensi: <strong><?= htmlspecialchars($last_notrans) ?></strong></small>
                     <a href="cetak-kwitansi.php?source=input-baru&notrans=<?= htmlspecialchars($last_notrans) ?>" target="_blank" class="btn btn-sm btn-primary">
-                        <i class="fas fa-print"></i> Cetak Kwitansi / Instruksi
+                        <i class="fas fa-print me-1"></i> Cetak Kwitansi / Instruksi
                     </a>
                 </div>
             </div>
@@ -541,18 +492,23 @@ ob_start();
                     <label for="cara_pembayaran" class="form-label">Metode Pembayaran <span class="text-danger">*</span></label>
                     <select class="form-select" id="cara_pembayaran" name="cara_pembayaran" required>
                         <option value="TUNAI">Tunai (Cash / Bayar di Kasir)</option>
-                        <option value="IPAYMU">iPaymu (Online / Virtual Account)</option>
+                        <option value="IPAYMU">iPaymu (QRIS & Virtual Account)</option>
                     </select>
                 </div>
                 <div class="col-md-6 mb-3" id="box-payment-channel" style="display: none;">
-                    <label for="payment_channel" class="form-label">Pilihan Bank (Channel VA)</label>
+                    <label for="payment_channel" class="form-label">Pilihan Channel Pembayaran</label>
                     <select class="form-select" id="payment_channel" name="payment_channel">
-                        <option value="bca">Virtual Account BCA</option>
-                        <option value="mandiri">Virtual Account Mandiri</option>
-                        <option value="bni">Virtual Account BNI</option>
-                        <option value="bri">Virtual Account BRI</option>
-                        <option value="cimb">Virtual Account CIMB Niaga</option>
-                        <option value="permata">Virtual Account Permata</option>
+                        <optgroup label="QRIS (Instant QR Barcode)">
+                            <option value="qris" selected>QRIS (BCA, Mandiri, BRI, BNI, GoPay, OVO, Dana, ShopeePay)</option>
+                        </optgroup>
+                        <optgroup label="Virtual Account (Transfer Bank)">
+                            <option value="bca">Virtual Account BCA</option>
+                            <option value="mandiri">Virtual Account Mandiri</option>
+                            <option value="bni">Virtual Account BNI</option>
+                            <option value="bri">Virtual Account BRI</option>
+                            <option value="cimb">Virtual Account CIMB Niaga</option>
+                            <option value="permata">Virtual Account Permata</option>
+                        </optgroup>
                     </select>
                 </div>
             </div>

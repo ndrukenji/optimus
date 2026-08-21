@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "893c52a0-4521-4f4b-8e12-3f191b920194",
+		"name": "Optimus Parking - iPaymu Webhook & API Testing",
+		"description": "Collection lengkap untuk pengujian manual Sandbox dan Live Gateway iPaymu pada sistem Optimus Parking.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Webhook Callback - Pembayaran Berhasil (LUNAS)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"trx_id\": 226590,\n    \"sid\": \"STK/20260821/6A87D28F478BC\",\n    \"reference_id\": \"STK/20260821/6A87D28F478BC\",\n    \"status\": \"berhasil\",\n    \"status_code\": 1,\n    \"sub_total\": \"300000\",\n    \"total\": \"300000\",\n    \"amount\": \"300000\",\n    \"fee\": \"2100\",\n    \"paid_off\": 297900,\n    \"created_at\": \"2026-08-21 11:22:41\",\n    \"expired_at\": \"2026-08-22 11:22:41\",\n    \"paid_at\": \"2026-08-21 11:23:34\",\n    \"settlement_status\": \"settled\",\n    \"transaction_status_code\": 1,\n    \"is_escrow\": false,\n    \"system_notes\": \"Sandbox notify\",\n    \"via\": \"qris\",\n    \"channel\": \"qris\",\n    \"payment_no\": \"\",\n    \"buyer_name\": \"MEMBER PARKIR\",\n    \"buyer_email\": \"member@example.com\",\n    \"buyer_phone\": \"081234567890\",\n    \"additional_info\": [],\n    \"url\": \"http://localhost:81/yeye/optimus/callback-ipaymu.php\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:81/yeye/optimus/callback-ipaymu.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "81",
+					"path": [
+						"yeye",
+						"optimus",
+						"callback-ipaymu.php"
+					]
+				},
+				"description": "Simulasi webhook iPaymu saat pelanggan berhasil menyelesaikan pembayaran QRIS / Virtual Account."
+			},
+			"response": [
+				{
+					"name": "Success Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"trx_id\": 226590,\n    \"reference_id\": \"STK/20260821/6A87D28F478BC\",\n    \"status\": \"berhasil\",\n    \"status_code\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:81/yeye/optimus/callback-ipaymu.php",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "81",
+							"path": [
+								"yeye",
+								"optimus",
+								"callback-ipaymu.php"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n    \"status\": \"success\",\n    \"message\": \"Payment callback processed successfully for STK/20260821/6A87D28F478BC\"\n}"
+				}
+			]
+		},
+		{
+			"name": "2. Webhook Callback - Pembayaran Pending (Form URL-Encoded)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "trx_id",
+							"value": "226590",
+							"type": "text"
+						},
+						{
+							"key": "reference_id",
+							"value": "STK/20260821/6A87D28F478BC",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "pending",
+							"type": "text"
+						},
+						{
+							"key": "status_code",
+							"value": "0",
+							"type": "text"
+						},
+						{
+							"key": "via",
+							"value": "qris",
+							"type": "text"
+						},
+						{
+							"key": "channel",
+							"value": "mpm",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "300000",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:81/yeye/optimus/callback-ipaymu.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "81",
+					"path": [
+						"yeye",
+						"optimus",
+						"callback-ipaymu.php"
+					]
+				},
+				"description": "Simulasi webhook dengan format standar form urlencoded iPaymu saat transaksi masih pending."
+			},
+			"response": [
+				{
+					"name": "Acknowledged Response",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n    \"status\": \"acknowledged\",\n    \"message\": \"Callback received with status: pending\"\n}"
+				}
+			]
+		},
+		{
+			"name": "3. Webhook Callback - Pembayaran Batal / Expired",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"trx_id\": 226590,\n    \"reference_id\": \"STK/20260821/6A87D28F478BC\",\n    \"status\": \"expired\",\n    \"status_code\": 3,\n    \"amount\": 300000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:81/yeye/optimus/callback-ipaymu.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "81",
+					"path": [
+						"yeye",
+						"optimus",
+						"callback-ipaymu.php"
+					]
+				},
+				"description": "Simulasi webhook iPaymu saat tagihan telah kadaluarsa."
+			},
+			"response": [
+				{
+					"name": "Expired Acknowledged",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n    \"status\": \"acknowledged\",\n    \"message\": \"Callback received with status: expired\"\n}"
+				}
+			]
+		}
+	]
+}
